@@ -2,33 +2,54 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-class City(models.Model):
-    name = models.CharField(max_length=100)
-
-
 class Brand(models.Model):
     name = models.CharField(max_length=100)
-    name_for_link = models.CharField(max_length=100)
+    name_for_link = models.CharField(max_length=100, unique=True)
+    photo = models.ImageField(upload_to="photos_for_brand/%Y/%m/%d/")
     about = models.TextField()
-    fk_country_id = models.ForeignKey('City', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Brand"
+        verbose_name_plural = "Brands"
+        ordering = ['id']
+
+    def __str__(self):
+        return self.name
+
+
+class Section(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = "Section"
+        verbose_name_plural = "Sections"
+        ordering = ['id']
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     name_for_link = models.CharField(max_length=100)
-    parent_category_id = models.IntegerField()
-    about = models.TextField()
+    fk_section_id = models.ForeignKey('Section', on_delete=models.CASCADE, verbose_name="Section")
+    about = models.TextField(blank=True)
 
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ['id']
+        unique_together = (('name_for_link', 'fk_section_id'),)
 
-class Characteristic(models.Model):
-    name = models.CharField(max_length=100)
-    brands = models.ManyToManyField('Goods', through='CharacteristicsGoods')
+    def __str__(self):
+        return self.fk_section_id.name + ' / ' + self.name
 
 
 class Goods(models.Model):
     tittle = models.CharField(max_length=256)
     price = models.IntegerField(validators=[MinValueValidator(0)])
     sale_price = models.IntegerField(validators=[MinValueValidator(0)])
+    main_photo = models.ImageField(upload_to="main_photos_for_goods/%Y/%m/%d/")
     is_sale = models.BooleanField(default=False)
     in_stock = models.BooleanField(default=True)
     is_enable = models.BooleanField(default=True)
@@ -36,8 +57,13 @@ class Goods(models.Model):
     count = models.IntegerField(validators=[MinValueValidator(0)])
     add_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
-    fk_brand_id = models.ForeignKey('Brand', on_delete=models.CASCADE)
-    fk_category_id = models.ForeignKey('Category', on_delete=models.CASCADE)
+    fk_brand_id = models.ForeignKey('Brand', verbose_name='Brand', on_delete=models.CASCADE)
+    fk_category_id = models.ForeignKey('Category', verbose_name='Category', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Goods"
+        verbose_name_plural = "Goods"
+        ordering = ['add_date']
 
 
 class PhotoForGoods(models.Model):
@@ -46,10 +72,63 @@ class PhotoForGoods(models.Model):
     numbers = models.IntegerField(validators=[MinValueValidator(0)])
 
 
+class Color(models.Model):
+    name = models.CharField(max_length=50)
+    hex = models.CharField(max_length=7)
+    fk_goods_id = models.ManyToManyField('Goods', through='ColorsGoods')
+
+    class Meta:
+        verbose_name = "Color"
+        verbose_name_plural = "Colors"
+        ordering = ['name']
+
+    def __str__(self):
+        return name
+
+
+class ColorsGoods(models.Model):
+    fk_color_id = models.ForeignKey('Color', on_delete=models.CASCADE)
+    fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
+
+
+class Size(models.Model):
+    name = models.CharField(max_length=10)
+    fk_goods_id = models.ManyToManyField('Goods', through='SizesGoods')
+
+    class Meta:
+        verbose_name = "Size"
+        verbose_name_plural = "Sizes"
+        ordering = ['name']
+
+    def __str__(self):
+        return name
+
+
+class SizesGoods(models.Model):
+    fk_size_id = models.ForeignKey('Size', on_delete=models.CASCADE)
+    fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
+
+
+class Characteristic(models.Model):
+    name = models.CharField(max_length=100)
+    fk_goods_id = models.ManyToManyField('Goods', through='CharacteristicsGoods')
+
+    class Meta:
+        verbose_name = "Characteristic"
+        verbose_name_plural = "Characteristics"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class CharacteristicsGoods(models.Model):
     fk_characteristic_id = models.ForeignKey('Characteristic', on_delete=models.CASCADE)
     fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
     value = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = (('fk_characteristic_id', 'fk_goods_id'),)
 
 
 class LoyaltyCardType(models.Model):
@@ -109,7 +188,7 @@ class Review(models.Model):
     fk_buyer_id = models.ForeignKey('Buyer', on_delete=models.CASCADE)
     tittle = models.CharField(max_length=256)
     review_text = models.TextField()
-    ddd_date = models.DateTimeField(auto_now_add=True)
+    add_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
 
 
