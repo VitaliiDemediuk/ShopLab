@@ -1,12 +1,13 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import *
 
 
 class Brand(models.Model):
     name = models.CharField(max_length=100)
     name_for_link = models.CharField(max_length=100, unique=True)
     photo = models.ImageField(upload_to="photos_for_brand/%Y/%m/%d/")
-    about = models.TextField()
+    about = models.TextField(blank=True)
 
     class Meta:
         verbose_name = "Brand"
@@ -19,6 +20,7 @@ class Brand(models.Model):
 
 class Section(models.Model):
     name = models.CharField(max_length=100)
+    name_for_link = models.CharField(max_length=100, unique=True)
 
     class Meta:
         verbose_name = "Section"
@@ -46,14 +48,14 @@ class Category(models.Model):
 
 
 class Goods(models.Model):
-    tittle = models.CharField(max_length=256)
-    price = models.IntegerField(validators=[MinValueValidator(0)])
-    sale_price = models.IntegerField(validators=[MinValueValidator(0)])
+    title = models.CharField(max_length=256)
+    price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))])
+    sale_price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))],
+                                     blank=True, default=Decimal('0.00'))
     main_photo = models.ImageField(upload_to="main_photos_for_goods/%Y/%m/%d/")
-    is_sale = models.BooleanField(default=False)
     in_stock = models.BooleanField(default=True)
     is_enable = models.BooleanField(default=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     count = models.IntegerField(validators=[MinValueValidator(0)])
     add_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
@@ -69,12 +71,16 @@ class Goods(models.Model):
 class PhotoForGoods(models.Model):
     file_name = models.ImageField(upload_to="photos_for_goods/%Y/%m/%d/")
     fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
-    numbers = models.IntegerField(validators=[MinValueValidator(0)])
+
+    class Meta:
+        verbose_name = "PHOTO FOR GOODS"
+        verbose_name_plural = "PHOTOS FOR GOODS"
+        ordering = ['id']
 
 
 class Color(models.Model):
     name = models.CharField(max_length=50)
-    hex = models.CharField(max_length=7)
+    hex = models.CharField(max_length=7, unique=True)
     fk_goods_id = models.ManyToManyField('Goods', through='ColorsGoods')
 
     class Meta:
@@ -83,16 +89,20 @@ class Color(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return name
+        return self.name
 
 
 class ColorsGoods(models.Model):
     fk_color_id = models.ForeignKey('Color', on_delete=models.CASCADE)
     fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Goods color"
+        verbose_name_plural = "Goods colors"
+
 
 class Size(models.Model):
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=10, unique=True)
     fk_goods_id = models.ManyToManyField('Goods', through='SizesGoods')
 
     class Meta:
@@ -101,12 +111,16 @@ class Size(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return name
+        return self.name
 
 
 class SizesGoods(models.Model):
     fk_size_id = models.ForeignKey('Size', on_delete=models.CASCADE)
     fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Goods size"
+        verbose_name_plural = "Goods sizes"
 
 
 class Characteristic(models.Model):
@@ -128,6 +142,8 @@ class CharacteristicsGoods(models.Model):
     value = models.CharField(max_length=100)
 
     class Meta:
+        verbose_name = "GOODS Characteristic"
+        verbose_name_plural = "GOODS Characteristics"
         unique_together = (('fk_characteristic_id', 'fk_goods_id'),)
 
 
@@ -195,4 +211,6 @@ class Review(models.Model):
 class PhotoForReview(models.Model):
     file_name = models.ImageField(upload_to="photos_for_review/%Y/%m/%d/")
     fk_goods_id = models.ForeignKey('Review', on_delete=models.CASCADE)
-    numbers = models.IntegerField(validators=[MinValueValidator(0)])
+
+    class Meta:
+        ordering = ['id']

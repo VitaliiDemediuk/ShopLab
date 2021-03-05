@@ -61,6 +61,7 @@ cover/
 *.pot
 
 # Django stuff:
+media/
 */migrations/
 !*/migrations/__init__.py
 *.log

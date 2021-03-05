@@ -14,6 +14,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DOMAIN = "http://127.0.0.1:8003"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -25,7 +26,6 @@ SECRET_KEY = '!w%yeo_4n252=6l%8xd3yq@sy3f-#$)s@mkl-y=virbgvurd$m'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 

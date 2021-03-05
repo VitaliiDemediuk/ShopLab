@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+</head>
+<body>
+    <ul>
+        <li><a href="brands/">Brands</a></li>
+        <li>Categories:
+            <ul>
+                {% for section in  sections %}
+                    <li>
+                        <a href="section/{{ section.name_for_link }}">{{ section.name }}</a>
+                        <ul>
+                        {% for category in section.category %}
+                            <li><a href="section/{{ section.name_for_link }}/{{ category.name_for_link }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

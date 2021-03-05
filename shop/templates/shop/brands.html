@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+    <style>
+        .logo_img{
+            max-width: 300px;
+        }
+        .brand_li{
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        {% for brand in brands %}
+            <li class="brand_li">
+                <a href="{{ brand.name_for_link }}"><img class="logo_img" src="{{ img_link_prefix }}{{ brand.photo }}" alt="{{ brand.name }}"></a>
+                <a href="{{ brand.name_for_link }}"><h3>{{ brand.name }}</h3></a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

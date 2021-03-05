@@ -45,8 +45,8 @@ class CategoryAdmin(admin.ModelAdmin):
 #Section
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
-    list_display_links = ['id', 'name']
+    list_display = ['id', 'name', 'name_for_link']
+    list_display_links = ['id', 'name', 'name_for_link']
     search_field = ['name']
 
 #Goods
@@ -73,6 +73,10 @@ class CharacteristicsGoodsInline(admin.TabularInline):
 
 @admin.register(Goods)
 class GoodsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'price', 'sale_price', 'in_stock', 'is_enable', 'count', 'fk_brand_id', 'fk_category_id']
+    list_display_links = ['id', 'title']
+    search_field = ['id', 'title']
+
     inlines = [
         SizeForGoodsInline,
         ColorForGoodsInline,
