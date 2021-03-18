@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'ShopLabWork/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'ShopLabWork/css/ui.css' %}">
+    <link href="https://bootstrap-ecommerce.com/bootstrap-ecommerce-html/css/responsive.css?v=2.0" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ShopLabWork/css/style.css' %}">
+    <title></title>
+  </head>
+
+  <body  class="d-flex flex-column min-vh-100">
+    <!-- Navigatin Bar -->
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/"><img class="logo-img mr-sm-2" src="{% static 'ShopLabWork/img/shopping-bag.png' %}" alt="Logo"> Shop</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor03">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="" data-toggle="dropdown">Categories</a>
+            <ul class="dropdown-menu">
+              {% for section in sections %}
+                  <li>
+                    <a class="dropdown-item" href="/section/{{ section.name_for_link }}">{{ section.name }} &#9205;</a>
+                    <ul class="submenu dropdown-menu">
+                      {% for category in section.category %}
+                        <li><a class="dropdown-item" href="/section/{{ section.name_for_link }}/{{ category.name_for_link }}">{{ category.name }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/brands">Brands</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">About</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search">
+          <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
+          <a href="#"><button type="button" class="btn btn-link ml-sm-2 nav-ico-button"><img class="nav-ico-img" src="{% static 'ShopLabWork/img/account.png' %}" alt="Account"></button></a>
+          <a href="#"><button type="button" class="btn btn-link ml-sm-2 nav-ico-button"><img class="nav-ico-img" src="{% static 'ShopLabWork/img/shopping-cart.png' %}" alt="Cart"></button></a>
+        </form>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="wrapper flex-grow-1">

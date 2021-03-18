@@ -1,0 +1,25 @@
+<div class="row">
+{% for goods in goods_list %}
+        <div class="col-md-4">
+            <figure class="card card-product-grid">
+                <a href="{{ link_prefix }}/product/{{ goods.id }}" class="img-wrap">
+                    <img src="{{ img_link_prefix }}{{ goods.main_photo }}">
+                </a>
+                <figcaption class="info-wrap">
+                    <a href="{{ link_prefix }}/product/{{ goods.id }}" class="title">{{ goods.title }}</a>
+                    <div class="mt-2">
+                        {% if goods.sale_price == 0 %}
+                            <div class="price mt-2">${{ goods.price }}</div>
+                        {% else %}
+                            <div class="price-wrap mt-2">
+                                <span class="price">${{ goods.sale_price }}</span>
+                                <del class="price-old">${{ goods.price }}</del>
+					        </div>
+                        {% endif %}
+                        <a href="{{ link_prefix }}/product/{{ goods.id }}" class="btn btn-sm btn-outline-primary float-right">Add to cart <i class="fa fa-shopping-cart"></i></a>
+                    </div> <!-- action-wrap.end -->
+                </figcaption>
+            </figure> <!-- card // -->
+        </div> <!-- col.// -->
+    {% endfor %}
+</div>

@@ -1,55 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ goods.title }}</title>
-    <style>
-        .main_product_photo{
-            width: 400px;
-        }
 
-        .product_photo{
-            width: 150px;
-        }
-    </style>
-</head>
-<body>
-    <h1>{{ goods.title }}</h1>
-    <p>Price: {{ goods.price }}</p>
-    {% if goods.sale_price != 0 %}
-        <p style="color: #ff0000">Sale price: {{ goods.sale_price }}</p>
-    {% endif %}
-    <p>Brand: {{ goods.brand }}</p>
-    <img class="main_product_photo" src="{{ img_link_prefix }}{{ goods.main_photo }}" alt="{{ goods.title }}">
-    <br>
-    {% for photo in goods.photos %}
-        <img class="product_photo" src="{{ img_link_prefix }}{{ photo }}" alt="{{ goods.title }}">
-    {% endfor %}
-    <br><br>
-    <span>Sizes:</span>
-    <select>
-        {% for size in goods.sizes %}
-            <option id="{{ size.id }}">{{ size.name }}</option>
-        {% endfor %}
-    </select>
-    <br><br>
-    <span>Colors:</span>
-    {% for color in goods.colors %}
-        <span style="color: {{ color.hex }}">{{ color.name }}</span>
-    {% endfor %}
-    {% if goods.description|length != 0 %}
-        <h3>Description:</h3>
-        {% autoescape off %}
-            <p>{{ goods.description }}</p>
-        {% endautoescape %}
-    {% endif %}
-    {% if goods.characteristics|length != 0 %}
-        <h3>Characteristics:</h3>
-            <ul style="list-style-type: none">
-                {% for characteristic in goods.characteristics %}
-                    <li>{{ characteristic.name }}: {{ characteristic.value }}</li>
-                {% endfor %}
-            </ul>
-    {% endif %}
-</body>
-</html>
+{% include 'shop/include/head.html' %}
+
+{% include 'shop/include/product_detailed.html' %}
+
+{% include 'shop/include/footer.html' %}

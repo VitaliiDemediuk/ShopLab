@@ -61,6 +61,7 @@ class Goods(models.Model):
     edit_date = models.DateTimeField(auto_now=True)
     fk_brand_id = models.ForeignKey('Brand', verbose_name='Brand', on_delete=models.CASCADE)
     fk_category_id = models.ForeignKey('Category', verbose_name='Category', on_delete=models.CASCADE)
+    fk_color_id = models.ForeignKey("Color", verbose_name='Color', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Goods"
@@ -81,7 +82,6 @@ class PhotoForGoods(models.Model):
 class Color(models.Model):
     name = models.CharField(max_length=50)
     hex = models.CharField(max_length=7, unique=True)
-    fk_goods_id = models.ManyToManyField('Goods', through='ColorsGoods')
 
     class Meta:
         verbose_name = "Color"
@@ -90,15 +90,6 @@ class Color(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class ColorsGoods(models.Model):
-    fk_color_id = models.ForeignKey('Color', on_delete=models.CASCADE)
-    fk_goods_id = models.ForeignKey('Goods', on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "Goods color"
-        verbose_name_plural = "Goods colors"
 
 
 class Size(models.Model):

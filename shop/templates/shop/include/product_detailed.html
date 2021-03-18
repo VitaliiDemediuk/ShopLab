@@ -1,0 +1,76 @@
+<div class="card my-3">
+	<div class="row no-gutters">
+		<aside class="col-sm-6 border-right">
+            <article class="gallery-wrap">
+                <div class="img-big-wrap mt-3">
+                   <a href=""><img id="img-big" src="{{ img_link_prefix }}{{ goods.main_photo }}"></a>
+                </div> <!-- img-big-wrap.// -->
+                <div class="thumbs-wrap" id="thumbs-wrap">
+                    <a href="" class="item-thumb"> <img src="{{ img_link_prefix }}{{ goods.main_photo }}"></a>
+                    {% for photo in goods.photos %}
+                        <span class="item-thumb"> <img src="{{ img_link_prefix }}{{ photo }}"></span>
+                    {% endfor %}
+                </div> <!-- thumbs-wrap.// -->
+            </article> <!-- gallery-wrap .end// -->
+		</aside>
+		<main class="col-sm-6">
+            <article class="content-body">
+                <h2 class="title">{{ goods.title }}</h2>
+                {% autoescape off %}
+                        <span>{{ goods.description }}</span>
+                        <br>
+                {% endautoescape %}
+            <dl class="row">
+                <dt class="col-sm-3">Color: </dt>
+                <dd class="col-sm-9">{{ goods.color }}</dd>
+                <dt class="col-sm-3">Brand: </dt>
+                <dd class="col-sm-9">{{ goods.brand }}</dd>
+                {% for characteristic in goods.characteristics %}
+                    <dt class="col-sm-3">{{ characteristic.name }}: </dt>
+                    <dd class="col-sm-9">{{ characteristic.value }}</dd>
+                {% endfor %}
+            </dl>
+
+            <div class="h3 mb-4">
+                {% if goods.sale_price != 0 %}
+                    <span class="price">${{ goods.sale_price }}</span>
+                    <del class="price-old">${{ goods.price }}</del>
+                {% else %}
+                    <div class="price mt-2">${{ goods.price }}</div>
+                {% endif %}
+
+            </div> <!-- price-wrap.// -->
+                <hr>
+            <div class="form-row">
+                <div class="form-group col-md flex-grow-0">
+                        <label>Quantity</label>
+                        <div class="input-group mb-3 input-spinner">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                          </div>
+                          <input type="text" class="form-control" id="count-input" value="1">
+                          <div class="input-group-append">
+                            <button class="btn btn-light" type="button" id="button-minus"> − </button>
+                          </div>
+                        </div>
+                    </div>
+                <div class="col-2">
+                <label>Size</label>
+                    <select class="form-control">
+                        {% for size in goods.sizes %}
+                        <option id="{{ size.id }}">{{ size.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div> <!-- col.// -->
+                <div class="col" style="margin-top: 30px">
+                    <a href="" class="btn  btn-primary w-100"> Add to cart <i class="fas fa-shopping-cart"></i>  </a>
+                </div> <!-- col.// -->
+                <div class="col">
+                    <a href="#" class="btn  btn-light"> <i class="fas fa-heart"></i>  </a>
+                </div> <!-- col.// -->
+            </div> <!-- row.// -->
+
+            </article> <!-- product-info-aside .// -->
+		</main> <!-- col.// -->
+	</div> <!-- row.// -->
+</div>

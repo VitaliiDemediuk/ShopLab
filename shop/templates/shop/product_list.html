@@ -1,28 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Product list</title>
-    <style>
-        .main_product_photo{
-            width: 200px;
-        }
-    </style>
-</head>
-<body>
-    {% for goods in goods_list %}
-        <hr>
-        <a href="{{ link_prefix }}/product/{{ goods.id }}"><h3>{{ goods.title }}</h3></a>
-        <p>Price: {{ goods.price }}</p>
-        {% if goods.sale_price != 0 %}
-            <p style="color: #ff0000">Sale price: {{ goods.sale_price }}</p>
-        {% endif %}
-        <a href="{{ link_prefix }}/product/{{ goods.id }}"><img class="main_product_photo" src="{{ img_link_prefix }}{{ goods.main_photo }}" alt="{{ goods.title }}"></a>
-        {% if goods.in_stock == True %}
-            <p style="color: #00ff00">In stock</p>
-        {% else %}
-            <p style="color: #ff0000">Out of stock</p>
-        {% endif %}
-    {% endfor %}
-</body>
-</html>
+
+{% include 'shop/include/head.html' %}
+
+<div class="row product-list my-3">
+    <div class="col-md-3">
+        {% include 'shop/include/filter.html' %}
+    </div>
+    <div class="col-md-9">
+        {% include 'shop/include/products.html' %}
+    </div>
+</div>
+
+{% include 'shop/include/footer.html' %}

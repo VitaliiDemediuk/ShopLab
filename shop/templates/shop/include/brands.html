@@ -1,0 +1,16 @@
+<div class="row brand-list">
+{% for brand in brands %}
+        <div class="col-md-4" >
+            <figure class="card card-product-grid">
+                <a href="{{ brand.name_for_link }}" class="img-wrap">
+                    <div class="block">
+                        <img class="brand-logo" src="{{ img_link_prefix }}{{ brand.photo }}">
+                    </div>
+                </a>
+                <figcaption class="info-wrap">
+                    <a href="{{ brand.name_for_link }}" class="title">{{ brand.name }}</a>
+                </figcaption>
+            </figure> <!-- card // -->
+        </div> <!-- col.// -->
+    {% endfor %}
+</div>

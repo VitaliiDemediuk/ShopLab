@@ -1,0 +1,66 @@
+.nav-ico-img{
+  width: 40px;
+}
+
+.logo-img{
+  width: 35px;
+}
+
+#skySlider{
+  max-width: 70%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.product-list{
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.brand-list{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.brand-logo{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.block {
+   height: 100%;
+   display: grid;
+   align-items: center;
+   justify-content: center;
+}
+
+@media (min-width: 992px){
+  .dropdown-menu .dropdown-toggle:after{
+    border-top: .3em solid transparent;
+      border-right: 0;
+      border-bottom: .3em solid transparent;
+      border-left: .3em solid;
+  }
+  .dropdown-menu .dropdown-menu{
+    margin-left:0; margin-right: 0;
+  }
+  .dropdown-menu li{
+    position: relative;
+  }
+  .nav-item .submenu{
+    display: none;
+    position: absolute;
+    left:100%; top:-7px;
+  }
+  .nav-item .submenu-left{
+    right:100%; left:auto;
+  }
+  .dropdown-menu > li:hover{ background-color: #f1f1f1 }
+  .dropdown-menu > li:hover > .submenu{
+    display: block;
+  }
+}

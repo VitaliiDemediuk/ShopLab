@@ -21,17 +21,10 @@ def get_sizes_by_id(id: int):
     return sizes
 
 
-def get_colors_by_id(id: int):
-    colors = []
-    color_query_set = ColorsGoods.objects.filter(fk_goods_id=id)
-    for color in color_query_set:
-        colors.append({'name': color.fk_color_id.name, 'hex': color.fk_color_id.hex})
-    return colors
-
-
 def get_photos_by_id(id: int):
     photos = list(PhotoForGoods.objects.filter(fk_goods_id=id).values_list('file_name', flat=True))
     return photos
+
 
 def get_characteristics_by_id(id: int):
     characteristics = []
@@ -49,8 +42,8 @@ def get_goods_by_id(id: int):
                                             'in_stock', 'is_enable', 'description'))[0]
         goods['brand'] = str(goods_query_set[0].fk_brand_id)
         goods['category'] = str(goods_query_set[0].fk_category_id)
+        goods['color'] = str(goods_query_set[0].fk_color_id)
         goods['sizes'] = get_sizes_by_id(id)
-        goods['colors'] = get_colors_by_id(id)
         goods['photos'] = get_photos_by_id(id)
         goods['characteristics'] = get_characteristics_by_id(id)
 

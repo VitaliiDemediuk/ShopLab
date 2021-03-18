@@ -55,11 +55,6 @@ class SizeForGoodsInline(admin.TabularInline):
     extra = 0
 
 
-class ColorForGoodsInline(admin.TabularInline):
-    model = ColorsGoods
-    extra = 0
-
-
 class PhotoForGoodsInline(admin.TabularInline):
     model = PhotoForGoods
     extra = 0
@@ -79,7 +74,6 @@ class GoodsAdmin(admin.ModelAdmin):
 
     inlines = [
         SizeForGoodsInline,
-        ColorForGoodsInline,
         PhotoForGoodsInline,
         CharacteristicsGoodsInline,
     ]
