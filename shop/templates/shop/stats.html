@@ -1,0 +1,48 @@
+{% include 'shop/include/head.html' %}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+
+//Section pie chart ----------------------------------------------------------------------------------------
+    var section_pie_chart_data = google.visualization.arrayToDataTable([
+        ['Section', 'Number'],
+        {%  for item in number_of_products_in_each_section %}
+            ['{{ item.name }}', {{ item.number }}],
+        {% endfor %}
+    ]);
+
+    var section_pie_chart_options = {
+      title: 'Section'
+    };
+
+    var section_pie_chart = new google.visualization.PieChart(document.getElementById('section_pie_chart'));
+
+    section_pie_chart.draw(section_pie_chart_data, section_pie_chart_options);
+
+
+//Categories pie chart ----------------------------------------------------------------------------------------
+    var category_pie_chart_data = google.visualization.arrayToDataTable([
+        ['Category', 'Number'],
+        {%  for item in number_of_products_in_each_category %}
+            ['{{ item.full_name }}', {{ item.number }}],
+        {% endfor %}
+    ]);
+
+    var category_pie_chart_options = {
+      title: 'Category'
+    };
+
+    var category_pie_chart = new google.visualization.PieChart(document.getElementById('category_pie_chart'));
+
+    category_pie_chart.draw(category_pie_chart_data, category_pie_chart_options);
+
+  }
+</script>
+<div id="section_pie_chart" style="width: 900px; height: 500px; margin: 0 auto;"></div>
+<div id="category_pie_chart" style="width: 900px; height: 500px; margin: 0 auto;"></div>
+
+{% include 'shop/include/footer.html' %}

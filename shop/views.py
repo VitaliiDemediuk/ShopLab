@@ -59,3 +59,12 @@ def brand(request, brand_link_name):
                                                           'goods_list': goods_list,
                                                           'img_link_prefix': DOMAIN + MEDIA_URL,
                                                           'link_prefix': DOMAIN})
+
+
+def stats(request):
+    sections = get_sections_with_categories()
+    number_of_products_in_each_section = get_number_of_products_in_each_section
+    number_of_products_in_each_category = get_number_of_products_in_each_category()
+    return render(request, 'shop/stats.html', {'sections': sections,
+                                               'number_of_products_in_each_section': number_of_products_in_each_section,
+                                               'number_of_products_in_each_category': number_of_products_in_each_category,})

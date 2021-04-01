@@ -5,6 +5,7 @@ urlpatterns = [
     path('', index),
     path('index/', index),
     path('brands/', brands),
+    path('stats/', stats),
     path('brands/<str:brand_link_name>', brand),
     path('product/<int:product_id>', product),
     path('section/<str:section_link_name>', section),
