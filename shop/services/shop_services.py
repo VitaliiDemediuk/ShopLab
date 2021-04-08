@@ -16,6 +16,9 @@ def get_brands():
     brands = list(Brand.objects.all().values('name', 'name_for_link', 'photo'))
     return brands
 
+def get_photos_for_slider():
+    photos = list(PhotoForSlider.objects.all().values('file_name'))
+    return photos
 
 def get_sizes_by_id(id: int):
     sizes = []

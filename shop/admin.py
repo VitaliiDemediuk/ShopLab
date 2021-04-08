@@ -64,8 +64,6 @@ class CharacteristicsGoodsInline(admin.TabularInline):
     model = CharacteristicsGoods
     extra = 0
 
-
-
 @admin.register(Goods)
 class GoodsAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'price', 'sale_price', 'in_stock', 'is_enable', 'count', 'fk_brand_id', 'fk_category_id']
@@ -77,5 +75,10 @@ class GoodsAdmin(admin.ModelAdmin):
         PhotoForGoodsInline,
         CharacteristicsGoodsInline,
     ]
-    #list_filter = ['']
     save_on_top = True
+
+#Photo for slider
+@admin.register(PhotoForSlider)
+class PhotoForSliderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'file_name']
+    list_display_links = ['id', 'file_name']

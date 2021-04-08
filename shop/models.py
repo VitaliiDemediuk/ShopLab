@@ -205,3 +205,15 @@ class PhotoForReview(models.Model):
 
     class Meta:
         ordering = ['id']
+
+
+class PhotoForSlider(models.Model):
+    file_name = models.ImageField(upload_to="photos_for_slider/%Y/%m/%d/")
+
+    class Meta:
+        verbose_name = "Photo for slider"
+        verbose_name_plural = "Photos for slider"
+        ordering = ['id']
+
+    def __str__(self):
+        return self.file_name.url

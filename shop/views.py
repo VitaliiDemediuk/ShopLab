@@ -4,9 +4,15 @@ from django.http import HttpResponse
 from ShopLabWork.settings import DOMAIN, MEDIA_URL
 from shop.services.shop_services import *
 
+IMG_LINK_PREFIX = DOMAIN + MEDIA_URL
+
 def index(request):
     sections = get_sections_with_categories()
-    return render(request, 'shop/index.html', {'sections': sections})
+    photo_for_slider = get_photos_for_slider()
+    return render(request, 'shop/index.html', {'sections': sections,
+                                               "photo_count_range": range(1, len(photo_for_slider)),
+                                               "photo_for_slider": photo_for_slider,
+                                               'img_link_prefix': IMG_LINK_PREFIX})
 
 
 def brands(request):
@@ -14,7 +20,7 @@ def brands(request):
     all_brands = get_brands()
     return render(request, 'shop/brands.html', {'sections': sections,
                                                 'brands': all_brands,
-                                                'img_link_prefix': DOMAIN+MEDIA_URL})
+                                                'img_link_prefix': IMG_LINK_PREFIX})
 
 
 def product(request, product_id):
@@ -25,7 +31,7 @@ def product(request, product_id):
     else:
         return render(request, 'shop/product.html', {'sections': sections,
                                                      'goods': goods,
-                                                     'img_link_prefix': DOMAIN + MEDIA_URL})
+                                                     'img_link_prefix': IMG_LINK_PREFIX})
 
 
 def section(request, section_link_name):
@@ -36,7 +42,7 @@ def section(request, section_link_name):
     else:
         return render(request, 'shop/product_list.html', {'sections': sections,
                                                           'goods_list': goods_list,
-                                                          'img_link_prefix': DOMAIN + MEDIA_URL})
+                                                          'img_link_prefix': IMG_LINK_PREFIX})
 
 
 def category(request, section_link_name, category_link_name):
@@ -47,7 +53,7 @@ def category(request, section_link_name, category_link_name):
     else:
         return render(request, 'shop/product_list.html', {'sections': sections,
                                                           'goods_list': goods_list,
-                                                          'img_link_prefix': DOMAIN + MEDIA_URL})
+                                                          'img_link_prefix': IMG_LINK_PREFIX})
 
 
 def brand(request, brand_link_name):
@@ -58,7 +64,7 @@ def brand(request, brand_link_name):
     else:
         return render(request, 'shop/product_list.html', {'sections': sections,
                                                           'goods_list': goods_list,
-                                                          'img_link_prefix': DOMAIN + MEDIA_URL,
+                                                          'img_link_prefix': IMG_LINK_PREFIX,
                                                           'link_prefix': DOMAIN})
 
 
