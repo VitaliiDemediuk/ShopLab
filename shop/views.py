@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
 from ShopLabWork.settings import DOMAIN, MEDIA_URL
@@ -68,3 +69,30 @@ def stats(request):
     return render(request, 'shop/stats.html', {'sections': sections,
                                                'number_of_products_in_each_section': number_of_products_in_each_section,
                                                'number_of_products_in_each_category': number_of_products_in_each_category,})
+
+
+def import_export(request):
+    sections = get_sections_with_categories()
+    return render(request, 'shop/import-export.html', {'sections': sections})
+
+
+def get_products_xlsx(request):
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    now = datetime.today().strftime("%d_%m_%Y-%H_%M_%S")
+    response['Content-Disposition'] = f'attachment; filename=products-{now}.xlsx'
+
+    wb = get_products_workbook()
+    wb.save(response)
+
+    return response
+
+
+def get_products_docx(request):
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    now = datetime.today().strftime("%d_%m_%Y-%H_%M_%S")
+    response['Content-Disposition'] = f'attachment; filename=products-{now}.docx'
+
+    document = get_products_document()
+    document.save(response)
+
+    return response
