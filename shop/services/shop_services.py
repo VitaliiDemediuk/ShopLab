@@ -12,8 +12,21 @@ def get_sections_with_categories():
     return sections
 
 
+def get_sections_with_categories_for_tree():
+    sections = list(Section.objects.extra(select={'text': 'name'}).values('id', 'text'))
+    for section in sections:
+        section['children'] = list(Category.objects.filter(fk_section_id=section['id'])
+                                           .extra(select={'text': 'name'}).values('id', 'text'))
+        section['id'] = 'section-' + str(section['id'])
+    return sections
+
+
 def get_brands():
     brands = list(Brand.objects.all().values('name', 'name_for_link', 'photo'))
+    return brands
+
+def get_brands_for_tree():
+    brands = list(Brand.objects.all().extra(select={'text': 'name'}).values('id', 'text'))
     return brands
 
 def get_photos_for_slider():
@@ -105,6 +118,12 @@ def filter_goods_by_category_link_name(goods_list_query_set, category_link_name)
     return goods_list_query_set
 
 
+def filter_goods_by_category_id(goods_list_query_set, category_id):
+    if category_id is not None:
+        goods_list_query_set = goods_list_query_set.filter(fk_category_id__in=category_id)
+    return goods_list_query_set
+
+
 def filter_goods_by_brand_link_name(goods_list_query_set, brand_link_name):
     if brand_link_name is not None:
         brand_id = list(Brand.objects.filter(name_for_link=brand_link_name).values('id'))
@@ -115,18 +134,33 @@ def filter_goods_by_brand_link_name(goods_list_query_set, brand_link_name):
             goods_list_query_set = goods_list_query_set.filter(fk_brand_id=brand_id)
     return goods_list_query_set
 
-def get_goods_query_set(section_link_name = None, category_link_name = None, brand_link_name = None):
+
+def filter_goods_by_brand_id(goods_list_query_set, brand_id):
+    if brand_id is not None:
+        goods_list_query_set = goods_list_query_set.filter(fk_brand_id__in=brand_id)
+    return goods_list_query_set
+
+
+def get_goods_query_set(section_link_name = None, category_id = None, brand_id = None, category_link_name = None, brand_link_name = None):
     goods_list_query_set = Goods.objects.all()
     # Filter by section:
     goods_list_query_set = filter_goods_by_section_link_name(goods_list_query_set, section_link_name)
     if goods_list_query_set is None:
         return None
-    # Filter by category:
+    # Filter by category link name:
     goods_list_query_set = filter_goods_by_category_link_name(goods_list_query_set, category_link_name)
+    if goods_list_query_set is None:
+        return None
+    # Filter by category id:
+    goods_list_query_set = filter_goods_by_category_id(goods_list_query_set, category_id)
     if goods_list_query_set is None:
         return None
     # Filter by brand:
     goods_list_query_set = filter_goods_by_brand_link_name(goods_list_query_set, brand_link_name)
+    if goods_list_query_set is None:
+        return None
+    # Filter by brand id:
+    goods_list_query_set = filter_goods_by_brand_id(goods_list_query_set, brand_id)
     if goods_list_query_set is None:
         return None
 
@@ -134,7 +168,7 @@ def get_goods_query_set(section_link_name = None, category_link_name = None, bra
 
 
 def get_goods_list(section_link_name = None, category_link_name = None, brand_link_name = None):
-    goods_list_query_set = get_goods_query_set(section_link_name, category_link_name, brand_link_name)
+    goods_list_query_set = get_goods_query_set(section_link_name=section_link_name, category_link_name=category_link_name, brand_link_name=brand_link_name)
     goods_list = list(goods_list_query_set.filter(is_enable=True).values('id', 'title', 'price',
                                                                          'sale_price', 'main_photo', 'in_stock'))
     return goods_list
@@ -191,7 +225,7 @@ def add_products_to_spreadsheet(ws_products, products, column_list_number, max_n
                              value=f"{photo}")
 
 
-def get_products_workbook(section_link_name = None, category_link_name = None, brand_link_name = None):
+def get_products_workbook(section_link_name = None, category_id = None, brand_id = None):
     wb = openpyxl.Workbook()
     ws_products = wb.active
     ws_products.title = "Products"
@@ -202,15 +236,15 @@ def get_products_workbook(section_link_name = None, category_link_name = None, b
     max_number_photos = get_max_number_photos_in_product()
     add_hearer_to_spreadsheet(ws_products, column_list, max_number_characteristics, max_number_photos)
 
-    products = get_goods_query_set(section_link_name, category_link_name, brand_link_name)
+    products = get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
     add_products_to_spreadsheet(ws_products, products, len(column_list), max_number_characteristics)
 
     return wb
 
 
-def get_products_document(section_link_name = None, category_link_name = None, brand_link_name = None):
+def get_products_document(section_link_name = None, category_id = None, brand_id = None):
     document = docx.Document()
-    products = get_goods_query_set(section_link_name, category_link_name, brand_link_name)
+    products = get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
     for product in products:
         if product.is_enable:
             document.add_heading(product.title, 0)

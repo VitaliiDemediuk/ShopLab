@@ -1,9 +1,77 @@
+{% load static %}
 {% include 'shop/include/head.html' %}
 
-<div id="import-block">
+<div id="export-block">
     <h2>Export product</h2>
-    <a href="/get-products-xlsx"><button type="button" class="btn btn-success">Export to xlsx</button></a>
-    <a href="/get-products-docx"><button type="button" class="btn btn-success">Export to docx</button></a>
+    <div id="export-sections-tree"></div>
+    <div id="export-brands-tree"></div>
+    <a id="excel-export-a"><button type="button" class="btn btn-success" id="excel-export-button">Export to xlsx</button></a>
+    <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
 </div>
+
+<script src="{% static 'ShopLabWork/js/tree.min.js' %}"></script>
+<script>
+
+    let sections = {% autoescape off %} {{ sections_for_tree }} {% endautoescape %};
+    let brands = {% autoescape off %} {{ brands_for_tree }} {% endautoescape %};
+
+    let sections_tree = new Tree('#export-sections-tree', {
+        data: [{ id: '-1', text: 'All product', children: sections }],
+        closeDepth: 2,
+        loaded: function () {
+            this.values = ['-1'];
+        },
+        onChange: function () {
+            console.log(this.getValues());
+        }
+    });
+
+    let brands_tree = new Tree('#export-brands-tree', {
+        data: [{ id: '-1', text: 'All brands', children: brands }],
+        closeDepth: 1,
+        loaded: function () {
+            this.values = ['-1'];
+        },
+        onChange: function () {
+            console.log(this.getValues());
+        }
+    });
+
+    function get_http_parameters() {
+        let result = "";
+        if(sections_tree.nodesById['-1'].status === 1){
+            result += `categories=[${sections_tree.getValues()}]`
+        }
+        if(brands_tree.nodesById['-1'].status === 1){
+            if(result){
+               result += '&'
+            }
+            result += `brands=[${brands_tree.getValues()}]`
+        }
+        if(result){
+            result = '?' + result
+        }
+        return result;
+    }
+
+    let excel_export_button = document.getElementById('excel-export-button');
+
+    excel_export_button.addEventListener('click', function(){
+        console.log(get_http_parameters())
+        let excel_export_a = document.getElementById('excel-export-a');
+        excel_export_a.href = '/get-products-xlsx' + get_http_parameters();
+        excel_export_a.click();
+    });
+
+    let doc_export_button = document.getElementById('doc-export-button');
+
+    doc_export_button.addEventListener('click', function(){
+        let doc_export_a = document.getElementById('doc-export-a');
+        doc_export_a.href = '/get-products-docx' + get_http_parameters();
+        doc_export_a.click();
+    });
+
+
+</script>
 
 {% include 'shop/include/footer.html' %}

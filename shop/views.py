@@ -1,3 +1,4 @@
+import ast
 from datetime import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -79,7 +80,25 @@ def stats(request):
 
 def import_export(request):
     sections = get_sections_with_categories()
-    return render(request, 'shop/import-export.html', {'sections': sections})
+    sections_for_tree = get_sections_with_categories_for_tree()
+    brands_for_tree = get_brands_for_tree()
+    return render(request, 'shop/import-export.html', {'sections': sections,
+                                                       'sections_for_tree': sections_for_tree,
+                                                       'brands_for_tree': brands_for_tree})
+
+
+def _get_categories_id_from_request(request):
+    categories_id = request.GET.get('categories')
+    if categories_id:
+        categories_id = ast.literal_eval(categories_id)
+    return categories_id
+
+
+def _get_brands_id_from_request(request):
+    brands_id = request.GET.get('brands')
+    if brands_id:
+        brands_id = ast.literal_eval(brands_id)
+    return brands_id
 
 
 def get_products_xlsx(request):
@@ -87,7 +106,10 @@ def get_products_xlsx(request):
     now = datetime.today().strftime("%d_%m_%Y-%H_%M_%S")
     response['Content-Disposition'] = f'attachment; filename=products-{now}.xlsx'
 
-    wb = get_products_workbook()
+    categories_id = _get_categories_id_from_request(request)
+    brands_id = _get_brands_id_from_request(request)
+
+    wb = get_products_workbook(category_id=categories_id, brand_id=brands_id)
     wb.save(response)
 
     return response
@@ -98,7 +120,11 @@ def get_products_docx(request):
     now = datetime.today().strftime("%d_%m_%Y-%H_%M_%S")
     response['Content-Disposition'] = f'attachment; filename=products-{now}.docx'
 
-    document = get_products_document()
+    categories_id = _get_categories_id_from_request(request)
+    brands_id = _get_brands_id_from_request(request)
+    print(brands_id)
+
+    document = get_products_document(category_id=categories_id, brand_id=brands_id)
     document.save(response)
 
     return response
