@@ -48,6 +48,7 @@ class Category(models.Model):
 
 
 class Goods(models.Model):
+    sku = models.CharField(max_length=50)
     title = models.CharField(max_length=256)
     price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))])
     sale_price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))],

@@ -33,19 +33,19 @@ def __add_hearer_to_spreadsheet(ws_products, column_list, max_number_characteris
 
 def __add_products_to_spreadsheet(ws_products, products, column_list_number, max_number_characteristics):
     for k, product in enumerate(products, start=2):
-        product_data_list = [product.id, product.title, product.price, product.sale_price,
+        product_data_list = [product.sku, product.title, product.price, product.sale_price,
                              product.description, product.count, product.sale_price != 0, product.in_stock,
                              product.is_enable, product.fk_brand_id.name, product.fk_category_id.fk_section_id.name,
                              product.fk_category_id.name, product.fk_color_id.name, product.main_photo.url]
         ws_products.append(product_data_list)
-        characteristics = goods_services.get_characteristics_by_id(product_data_list[0])
+        characteristics = goods_services.get_characteristics_by_id(product.id)
         for i, characteristic in enumerate(characteristics):
             ws_products.cell(row=k, column=column_list_number + 2 * i + 1,
                              value=f"{characteristic['name']}")
             ws_products.cell(row=k, column=column_list_number + 2 * i + 2,
                              value=f"{characteristic['value']}")
 
-        photos = goods_services.get_photos_by_id(product_data_list[0])
+        photos = goods_services.get_photos_by_id(product.id)
         for i, photo in enumerate(photos):
             ws_products.cell(row=k,
                              column=column_list_number + 2 * max_number_characteristics + i + 1,
@@ -57,7 +57,7 @@ def get_products_workbook(section_link_name = None, category_id = None, brand_id
     ws_products = wb.active
     ws_products.title = "Products"
 
-    column_list = ['id', 'title', 'price', 'sale_price', 'description', 'count', 'is_sale', 'in_stock',
+    column_list = ['sku', 'title', 'price', 'sale_price', 'description', 'count', 'is_sale', 'in_stock',
                    'is_enable', 'brand', 'section', 'category', 'color', 'main photo']
     max_number_characteristics = __get_max_number_characteristics_in_product()
     max_number_photos = __get_max_number_photos_in_product()
@@ -74,6 +74,7 @@ def get_products_document(section_link_name = None, category_id = None, brand_id
     products = goods_services.get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
     for product in products:
         if product.is_enable:
+            document.add_heading(f'SKU: {product.sku}', 2)
             document.add_heading(product.title, 0)
             document.add_picture(f'{product.main_photo.path}', width=docx.shared.Cm(10))
             document.add_heading(f'Price: {product.price}', 2)

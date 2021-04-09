@@ -66,7 +66,8 @@ class CharacteristicsGoodsInline(admin.TabularInline):
 
 @admin.register(Goods)
 class GoodsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'price', 'sale_price', 'in_stock', 'is_enable', 'count', 'fk_brand_id', 'fk_category_id']
+    list_display = ['id', 'sku', 'title', 'price', 'sale_price', 'in_stock',
+                    'is_enable', 'count', 'fk_brand_id', 'fk_category_id']
     list_display_links = ['id', 'title']
     search_field = ['id', 'title']
 
