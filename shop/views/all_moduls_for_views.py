@@ -2,6 +2,7 @@ import ast
 from datetime import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import HttpResponseNotFound
 from ShopLabWork.settings import DOMAIN, MEDIA_URL
 from shop.services.shop_services import *
 

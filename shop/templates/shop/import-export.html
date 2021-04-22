@@ -9,9 +9,21 @@
     <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
 </div>
 
-<script src="{% static 'ShopLabWork/js/tree.min.js' %}"></script>
-<script>
+<div id="import-block">
+    <h2>Import product</h2>
+    <form method="post" enctype="multipart/form-data" action="/import-xlsx">
+        {% csrf_token %}
+        <label for="exampleInputFile">Spreadsheet</label>
+        <input type="file" name="spreadsheet" class="form-control-file" id="spreadsheet-file" aria-describedby="spreadsheet_file_help" accept=".xlsx">
+        <small id="spreadsheet_file_help" class="form-text text-muted">Only xlsx files should be inserted</small>
+        <button type="submit" class="btn btn-success disabled" id="excel-import-button" style="pointer-events: none;">Import xlsx</button>
+    </form>
+</div>
 
+<script src="{% static 'ShopLabWork/js/tree.min.js' %}"></script>
+<!-- Export scripts -->
+<script>
+    // export
     let sections = {% autoescape off %} {{ sections_for_tree }} {% endautoescape %};
     let brands = {% autoescape off %} {{ brands_for_tree }} {% endautoescape %};
 
@@ -20,9 +32,6 @@
         closeDepth: 2,
         loaded: function () {
             this.values = ['-1'];
-        },
-        onChange: function () {
-            console.log(this.getValues());
         }
     });
 
@@ -31,9 +40,6 @@
         closeDepth: 1,
         loaded: function () {
             this.values = ['-1'];
-        },
-        onChange: function () {
-            console.log(this.getValues());
         }
     });
 
@@ -71,7 +77,35 @@
         doc_export_a.click();
     });
 
+    // import
 
+    function set_excel_import_button_disable(button){
+        button.setAttribute("style", "pointer-events: none;")
+        button.setAttribute("class", "btn btn-success disabled")
+    }
+
+    function set_excel_import_button_enable(button){
+        button.setAttribute("style", "pointer-events: auto;")
+        button.setAttribute("class", "btn btn-success")
+    }
+
+    let spreadsheet_file_input = document.getElementById('spreadsheet-file');
+
+    spreadsheet_file_input.addEventListener('change', (event) => {
+        files = event.target.files
+        let excel_import_button = document.getElementById('excel-import-button');
+        if(files.length > 0){
+            file = files[0]
+            const file_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            if(file.type == file_type){
+                set_excel_import_button_enable(excel_import_button);
+            }else{
+                set_excel_import_button_disable(excel_import_button);
+            }
+        }else{
+            set_excel_import_button_disable(excel_import_button);
+        }
+    });
 </script>
 
 {% include 'shop/include/footer.html' %}

@@ -1,4 +1,5 @@
 from shop.views.all_moduls_for_views import *
+import openpyxl
 
 def __get_categories_id_from_request(request):
     categories_id = request.GET.get('categories')
@@ -43,9 +44,17 @@ def get_products_docx(request):
 
     categories_id = __get_categories_id_from_request(request)
     brands_id = __get_brands_id_from_request(request)
-    print(brands_id)
 
     document = import_export_services.get_products_document(category_id=categories_id, brand_id=brands_id)
     document.save(response)
 
     return response
+
+
+def import_xlsx(request):
+    if request.method == 'POST':
+        xlsx_file = request.FILES['spreadsheet']
+        import_report = import_export_services.import_xlsx_file(xlsx_file)
+        return HttpResponse(import_report)
+    else:
+        return HttpResponseNotFound()

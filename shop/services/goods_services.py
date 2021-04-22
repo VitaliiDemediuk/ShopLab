@@ -33,7 +33,7 @@ def get_goods_by_id(id: int):
         goods['category'] = str(goods_query_set[0].fk_category_id)
         goods['color'] = str(goods_query_set[0].fk_color_id)
         goods['sizes'] = __get_sizes_by_id(id)
-        goods['photos'] = et_photos_by_id(id)
+        goods['photos'] = get_photos_by_id(id)
         goods['characteristics'] = get_characteristics_by_id(id)
 
     return goods

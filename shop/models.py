@@ -4,9 +4,9 @@ from decimal import *
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     name_for_link = models.CharField(max_length=100, unique=True)
-    photo = models.ImageField(upload_to="photos_for_brand/%Y/%m/%d/")
+    photo = models.ImageField(upload_to="photos_for_brand/%Y/%m/%d/", blank=True)
     about = models.TextField(blank=True)
 
     class Meta:
@@ -19,7 +19,7 @@ class Brand(models.Model):
 
 
 class Section(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     name_for_link = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -41,19 +41,19 @@ class Category(models.Model):
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         ordering = ['id']
-        unique_together = (('name_for_link', 'fk_section_id'),)
+        unique_together = (('name', 'name_for_link', 'fk_section_id'),)
 
     def __str__(self):
         return self.fk_section_id.name + ' / ' + self.name
 
 
 class Goods(models.Model):
-    sku = models.CharField(max_length=50)
+    sku = models.CharField(max_length=50, unique=True)
     title = models.CharField(max_length=256)
     price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))])
     sale_price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(Decimal('0.00'))],
                                      blank=True, default=Decimal('0.00'))
-    main_photo = models.ImageField(upload_to="main_photos_for_goods/%Y/%m/%d/")
+    main_photo = models.ImageField(upload_to="main_photos_for_goods/%Y/%m/%d/", blank=True)
     in_stock = models.BooleanField(default=True)
     is_enable = models.BooleanField(default=True)
     description = models.TextField(blank=True)
@@ -81,8 +81,8 @@ class PhotoForGoods(models.Model):
 
 
 class Color(models.Model):
-    name = models.CharField(max_length=50)
-    hex = models.CharField(max_length=7, unique=True)
+    name = models.CharField(max_length=50, unique=True)
+    hex = models.CharField(max_length=7)
 
     class Meta:
         verbose_name = "Color"
@@ -116,7 +116,7 @@ class SizesGoods(models.Model):
 
 
 class Characteristic(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     fk_goods_id = models.ManyToManyField('Goods', through='CharacteristicsGoods')
 
     class Meta:

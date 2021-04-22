@@ -10,6 +10,7 @@ urlpatterns = [
     path('import-export', import_export_views.import_export),
     path('get-products-xlsx', import_export_views.get_products_xlsx),
     path('get-products-docx', import_export_views.get_products_docx),
+    path('import-xlsx', import_export_views.import_xlsx),
     path('brands/<str:brand_link_name>', views.brand),
     path('product/<int:product_id>', views.product),
     path('section/<str:section_link_name>', views.section),
