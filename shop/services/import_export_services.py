@@ -300,7 +300,7 @@ class ImportProductStatus(Enum):
     UPDATED = 2
 
 
-def __import_product(product: tuple, characteristic_count, photo_count) -> ImportProductStatus:
+def __import_product(product: tuple, characteristic_count, log: list) -> ImportProductStatus:
     product_dict = __get_dict_from_product_tuple(product, characteristic_count)
     status = ImportProductStatus.ADDED
     try:
@@ -309,13 +309,21 @@ def __import_product(product: tuple, characteristic_count, photo_count) -> Impor
                 status = ImportProductStatus.UPDATED
                 if not __update_product(product_dict):
                     status = ImportProductStatus.ERROR
+                    log.append(f'Successfully added the product with sku={product_dict["sku"]}')
+                log.append(f'Unsuccessfully added the product with sku={product_dict["sku"]}')
             else:
                 if not __add_product(product_dict):
                     status = ImportProductStatus.ERROR
-    except DatabaseError:
+                    log.append(f'Unsuccessfully added the product with sku={product_dict["sku"]}')
+                log.append(f'Successfully added the product with sku={product_dict["sku"]}')
+    except DatabaseError as err:
         status = ImportProductStatus.ERROR
-    except ValidationError:
+        log.append(str(err))
+        log.append(f'Unsuccessfully added the product with sku={product_dict["sku"]}')
+    except ValidationError as err:
         status = ImportProductStatus.ERROR
+        log.append(str(err))
+        log.append(f'Unsuccessfully added the product with sku={product_dict["sku"]}')
     return status
 
 
@@ -326,6 +334,7 @@ def import_xlsx_file(xlsx_file):
     is_correct_header = False
     characteristic_count, photo_count = 0, 0
     errors, added, updated = 0, 0, 0
+    log = list()
 
     if len(table):
         is_correct_header = __check_header(table[0])
@@ -341,16 +350,20 @@ def import_xlsx_file(xlsx_file):
     if is_correct_header:
         for i in range(1, len(table)):
             if table[i] != (None,) * len(table[i]):
-                status = __import_product(table[i], characteristic_count, photo_count)
+                status = __import_product(table[i], characteristic_count, log)
                 if status == ImportProductStatus.ERROR:
                     errors += 1
                 elif status == ImportProductStatus.ADDED:
                     added += 1
                 else:
                     updated += 1
-
+            else:
+                log.append("Empty row")
+    else:
+        log.append("Incorrect header!")
     import_report = {'is_correct_header': is_correct_header,
                      'errors': errors,
                      'added': added,
-                     'updated': updated }
-    return str(import_report)
+                     'updated': updated,
+                     'log': log}
+    return import_report

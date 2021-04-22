@@ -1,0 +1,20 @@
+{% include 'shop/include/head.html' %}
+
+<div style="width: 1000px; margin: auto;">
+    <h1>Import completed</h1>
+    {% if is_correct_header %}
+        <h2>Correct header</h2>
+    {% else %}
+        <h2>Incorrect header</h2>
+    {% endif %}
+    <h2>Added product: {{ added }}</h2>
+    <h2>Updated product: {{ updated }}</h2>
+    <h2>Incorrect product: {{ errors }}</h2>
+    <h2>Log:</h2>
+    <textarea rows="20" cols="100" id="log-textarea">
+        {{ log }}
+    </textarea>
+</div>
+
+
+{% include 'shop/include/footer.html' %}

@@ -1,23 +1,25 @@
 {% load static %}
 {% include 'shop/include/head.html' %}
 
-<div id="export-block">
-    <h2>Export product</h2>
-    <div id="export-sections-tree"></div>
-    <div id="export-brands-tree"></div>
-    <a id="excel-export-a"><button type="button" class="btn btn-success" id="excel-export-button">Export to xlsx</button></a>
-    <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
-</div>
+<div style="margin-left: 20px">
+    <div id="export-block" style="margin-top: 20px;">
+        <h2>Export product</h2>
+        <div id="export-sections-tree"></div>
+        <div id="export-brands-tree"></div>
+        <a id="excel-export-a"><button type="button" class="btn btn-success" id="excel-export-button">Export to xlsx</button></a>
+        <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
+    </div>
 
-<div id="import-block">
-    <h2>Import product</h2>
-    <form method="post" enctype="multipart/form-data" action="/import-xlsx">
-        {% csrf_token %}
-        <label for="exampleInputFile">Spreadsheet</label>
-        <input type="file" name="spreadsheet" class="form-control-file" id="spreadsheet-file" aria-describedby="spreadsheet_file_help" accept=".xlsx">
-        <small id="spreadsheet_file_help" class="form-text text-muted">Only xlsx files should be inserted</small>
-        <button type="submit" class="btn btn-success disabled" id="excel-import-button" style="pointer-events: none;">Import xlsx</button>
-    </form>
+    <div id="import-block" style="margin-top: 50px;">
+        <h2>Import product</h2>
+        <form method="post" enctype="multipart/form-data" action="/import-xlsx">
+            {% csrf_token %}
+            <label for="exampleInputFile">Spreadsheet</label>
+            <input type="file" name="spreadsheet" class="form-control-file" id="spreadsheet-file" aria-describedby="spreadsheet_file_help" accept=".xlsx">
+            <small id="spreadsheet_file_help" class="form-text text-muted">Only xlsx files should be inserted</small>
+            <button type="submit" class="btn btn-success disabled" id="excel-import-button" style="pointer-events: none;">Import xlsx</button>
+        </form>
+    </div>
 </div>
 
 <script src="{% static 'ShopLabWork/js/tree.min.js' %}"></script>

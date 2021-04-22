@@ -55,6 +55,17 @@ def import_xlsx(request):
     if request.method == 'POST':
         xlsx_file = request.FILES['spreadsheet']
         import_report = import_export_services.import_xlsx_file(xlsx_file)
-        return HttpResponse(import_report)
+        sections = section_brand_services.get_sections_with_categories()
+        sections_for_tree = section_brand_services.get_sections_with_categories_for_tree()
+        brands_for_tree = section_brand_services.get_brands_for_tree()
+        return render(request, 'shop/import-xlsx.html', {'sections': sections,
+                                                           'sections_for_tree': sections_for_tree,
+                                                           'brands_for_tree': brands_for_tree,
+                                                           'is_correct_header': import_report['is_correct_header'],
+                                                           'errors': import_report['errors'],
+                                                           'added': import_report['added'],
+                                                           'updated': import_report['updated'],
+                                                           'log': '\n'.join(import_report['log']),
+                                                           'import_report': import_report})
     else:
         return HttpResponseNotFound()
