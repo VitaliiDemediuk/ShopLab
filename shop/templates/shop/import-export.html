@@ -10,16 +10,18 @@
         <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
     </div>
 
-    <div id="import-block" style="margin-top: 50px;">
-        <h2>Import product</h2>
-        <form method="post" enctype="multipart/form-data" action="/import-xlsx">
-            {% csrf_token %}
-            <label for="exampleInputFile">Spreadsheet</label>
-            <input type="file" name="spreadsheet" class="form-control-file" id="spreadsheet-file" aria-describedby="spreadsheet_file_help" accept=".xlsx">
-            <small id="spreadsheet_file_help" class="form-text text-muted">Only xlsx files should be inserted</small>
-            <button type="submit" class="btn btn-success disabled" id="excel-import-button" style="pointer-events: none;">Import xlsx</button>
-        </form>
-    </div>
+    {% if request.user.is_staff %}
+        <div id="import-block" style="margin-top: 50px;">
+            <h2>Import product</h2>
+            <form method="post" enctype="multipart/form-data" action="{% url 'import-xlsx' %}">
+                {% csrf_token %}
+                <label for="exampleInputFile">Spreadsheet</label>
+                <input type="file" name="spreadsheet" class="form-control-file" id="spreadsheet-file" aria-describedby="spreadsheet_file_help" accept=".xlsx">
+                <small id="spreadsheet_file_help" class="form-text text-muted">Only xlsx files should be inserted</small>
+                <button type="submit" class="btn btn-success disabled" id="excel-import-button" style="pointer-events: none;">Import xlsx</button>
+            </form>
+        </div>
+    {% endif %}
 </div>
 
 <script src="{% static 'ShopLabWork/js/tree.min.js' %}"></script>
@@ -79,35 +81,36 @@
         doc_export_a.click();
     });
 
-    // import
+    {% if request.user.is_staff %}
+        // import
+        function set_excel_import_button_disable(button){
+            button.setAttribute("style", "pointer-events: none;")
+            button.setAttribute("class", "btn btn-success disabled")
+        }
 
-    function set_excel_import_button_disable(button){
-        button.setAttribute("style", "pointer-events: none;")
-        button.setAttribute("class", "btn btn-success disabled")
-    }
+        function set_excel_import_button_enable(button){
+            button.setAttribute("style", "pointer-events: auto;")
+            button.setAttribute("class", "btn btn-success")
+        }
 
-    function set_excel_import_button_enable(button){
-        button.setAttribute("style", "pointer-events: auto;")
-        button.setAttribute("class", "btn btn-success")
-    }
+        let spreadsheet_file_input = document.getElementById('spreadsheet-file');
 
-    let spreadsheet_file_input = document.getElementById('spreadsheet-file');
-
-    spreadsheet_file_input.addEventListener('change', (event) => {
-        files = event.target.files
-        let excel_import_button = document.getElementById('excel-import-button');
-        if(files.length > 0){
-            file = files[0]
-            const file_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            if(file.type == file_type){
-                set_excel_import_button_enable(excel_import_button);
+        spreadsheet_file_input.addEventListener('change', (event) => {
+            files = event.target.files
+            let excel_import_button = document.getElementById('excel-import-button');
+            if(files.length > 0){
+                file = files[0]
+                const file_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                if(file.type == file_type){
+                    set_excel_import_button_enable(excel_import_button);
+                }else{
+                    set_excel_import_button_disable(excel_import_button);
+                }
             }else{
                 set_excel_import_button_disable(excel_import_button);
             }
-        }else{
-            set_excel_import_button_disable(excel_import_button);
-        }
-    });
+        });
+    {% endif %}
 </script>
 
 {% include 'shop/include/footer.html' %}

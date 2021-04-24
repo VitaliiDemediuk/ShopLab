@@ -15,9 +15,9 @@ def __get_brands_id_from_request(request):
     return brands_id
 
 def import_export(request):
-    sections = section_brand_services.get_sections_with_categories()
-    sections_for_tree = section_brand_services.get_sections_with_categories_for_tree()
-    brands_for_tree = section_brand_services.get_brands_for_tree()
+    sections = section_brand_service.get_sections_with_categories()
+    sections_for_tree = section_brand_service.get_sections_with_categories_for_tree()
+    brands_for_tree = section_brand_service.get_brands_for_tree()
     return render(request, 'shop/import-export.html', {'sections': sections,
                                                        'sections_for_tree': sections_for_tree,
                                                        'brands_for_tree': brands_for_tree})
@@ -31,7 +31,7 @@ def get_products_xlsx(request):
     categories_id = __get_categories_id_from_request(request)
     brands_id = __get_brands_id_from_request(request)
 
-    wb = import_export_services.get_products_workbook(category_id=categories_id, brand_id=brands_id)
+    wb = import_export_service.get_products_workbook(category_id=categories_id, brand_id=brands_id)
     wb.save(response)
 
     return response
@@ -45,19 +45,19 @@ def get_products_docx(request):
     categories_id = __get_categories_id_from_request(request)
     brands_id = __get_brands_id_from_request(request)
 
-    document = import_export_services.get_products_document(category_id=categories_id, brand_id=brands_id)
+    document = import_export_service.get_products_document(category_id=categories_id, brand_id=brands_id)
     document.save(response)
 
     return response
 
 
 def import_xlsx(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_staff:
         xlsx_file = request.FILES['spreadsheet']
-        import_report = import_export_services.import_xlsx_file(xlsx_file)
-        sections = section_brand_services.get_sections_with_categories()
-        sections_for_tree = section_brand_services.get_sections_with_categories_for_tree()
-        brands_for_tree = section_brand_services.get_brands_for_tree()
+        import_report = import_export_service.import_xlsx_file(xlsx_file)
+        sections = section_brand_service.get_sections_with_categories()
+        sections_for_tree = section_brand_service.get_sections_with_categories_for_tree()
+        brands_for_tree = section_brand_service.get_brands_for_tree()
         return render(request, 'shop/import-xlsx.html', {'sections': sections,
                                                            'sections_for_tree': sections_for_tree,
                                                            'brands_for_tree': brands_for_tree,

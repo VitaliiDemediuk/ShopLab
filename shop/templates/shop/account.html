@@ -1,0 +1,7 @@
+{% include 'shop/include/head.html' %}
+<div style="margin-left: 20px; margin-top: 20px;">
+    <h1>Hi, {{ user.get_full_name }}!</h1>
+    <a href="{% url 'logout' %}"> Log out</a>
+</div>
+
+{% include 'shop/include/footer.html' %}

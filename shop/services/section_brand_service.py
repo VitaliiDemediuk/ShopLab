@@ -1,4 +1,4 @@
-from shop.services.all_moduls_for_services import *
+from shop.services.all_moduls_for_service import *
 
 
 def get_sections_with_categories():

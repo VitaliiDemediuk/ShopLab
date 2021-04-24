@@ -1,0 +1,14 @@
+
+{% include 'shop/include/head.html' %}
+
+<div id="registration" style="width: 35%; margin-left: auto; margin-right: auto; margin-top: 50px;">
+    <h1>LOG IN</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+        <p>Don't have an account yet? <a href="{% url 'registration' %}">Create account</a></p>
+    </form>
+</div>
+
+{% include 'shop/include/footer.html' %}

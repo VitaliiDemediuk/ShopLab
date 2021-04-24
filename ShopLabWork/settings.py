@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+AUTH_USER_MODEL = 'shop.CustomUser'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DOMAIN = "http://127.0.0.1:8000"

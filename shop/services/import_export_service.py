@@ -1,4 +1,4 @@
-from shop.services.all_moduls_for_services import *
+from shop.services.all_moduls_for_service import *
 from enum import Enum
 
 import os
@@ -47,14 +47,14 @@ def __add_products_to_spreadsheet(ws_products, products, column_list_number, max
                              product.is_enable, product.fk_brand_id.name, product.fk_category_id.fk_section_id.name,
                              product.fk_category_id.name, product.fk_color_id.name, product.main_photo.url]
         ws_products.append(product_data_list)
-        characteristics = goods_services.get_characteristics_by_id(product.id)
+        characteristics = goods_service.get_characteristics_by_id(product.id)
         for i, characteristic in enumerate(characteristics):
             ws_products.cell(row=k, column=column_list_number + 2 * i + 1,
                              value=f"{characteristic['name']}")
             ws_products.cell(row=k, column=column_list_number + 2 * i + 2,
                              value=f"{characteristic['value']}")
 
-        photos = goods_services.get_photos_by_id(product.id)
+        photos = goods_service.get_photos_by_id(product.id)
         for i, photo in enumerate(photos):
             ws_products.cell(row=k,
                              column=column_list_number + 2 * max_number_characteristics + i + 1,
@@ -72,7 +72,7 @@ def get_products_workbook(section_link_name = None, category_id = None, brand_id
     max_number_photos = __get_max_number_photos_in_product()
     __add_hearer_to_spreadsheet(ws_products, column_list, max_number_characteristics, max_number_photos)
 
-    products = goods_services.get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
+    products = goods_service.get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
     __add_products_to_spreadsheet(ws_products, products, len(column_list), max_number_characteristics)
 
     return wb
@@ -80,7 +80,7 @@ def get_products_workbook(section_link_name = None, category_id = None, brand_id
 
 def get_products_document(section_link_name = None, category_id = None, brand_id = None):
     document = docx.Document()
-    products = goods_services.get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
+    products = goods_service.get_goods_query_set(section_link_name, category_id= category_id, brand_id= brand_id)
     for product in products:
         if product.is_enable:
             document.add_heading(f'SKU: {product.sku}', 2)
@@ -98,10 +98,10 @@ def get_products_document(section_link_name = None, category_id = None, brand_id
             document.add_heading(f'Category: {product.fk_category_id.name}', 2)
             document.add_heading(f'Description:', 2)
             document.add_paragraph(product.description)
-            photos = goods_services.get_photos_by_id(product.id)
+            photos = goods_service.get_photos_by_id(product.id)
             for photo in photos:
                 document.add_picture(f'{MEDIA_ROOT}/{photo}', width=docx.shared.Cm(7))
-            characteristics = goods_services.get_characteristics_by_id(product.id)
+            characteristics = goods_service.get_characteristics_by_id(product.id)
             table = document.add_table(rows=len(characteristics), cols=2)
             for i, characteristic in enumerate(characteristics):
                 cell = table.cell(i, 0)
