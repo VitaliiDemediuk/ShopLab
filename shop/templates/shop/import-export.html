@@ -10,7 +10,7 @@
         <a id="doc-export-a"><button type="button" class="btn btn-success" id="doc-export-button">Export to docx</button></a>
     </div>
 
-    {% if request.user.is_staff %}
+    {% if request.user.is_superuser %}
         <div id="import-block" style="margin-top: 50px;">
             <h2>Import product</h2>
             <form method="post" enctype="multipart/form-data" action="{% url 'import-xlsx' %}">

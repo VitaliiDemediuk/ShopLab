@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as django_views
 import shop.views.import_export_views as import_export_views
-import shop.views.account_view as account_view
+import shop.views.account_views as account_views
 import shop.views.views as views
 
 urlpatterns = [
@@ -17,9 +17,10 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product),
     path('section/<str:section_link_name>/', views.section),
     path('section/<str:section_link_name>/<str:category_link_name>/', views.category),
-    path('account/', account_view.account, name='account'),
-    path('registration/', account_view.registration, name='registration'),
-    path('login/', account_view.user_login, name='login'),
-    path('logout/', account_view.user_logout, name='logout'),
+    path('account/', account_views.account, name='account'),
+    path('registration/', account_views.registration, name='registration'),
+    path('login/', account_views.user_login, name='login'),
+    path('logout/', account_views.user_logout, name='logout'),
     path('password-reset/', django_views.PasswordResetView.as_view(), name='password-reset'),
+    path('email-verification/', account_views.email_verification, name='email-verification'),
 ]

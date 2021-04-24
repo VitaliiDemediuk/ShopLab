@@ -2,8 +2,10 @@ import openpyxl
 import docx
 from docx.shared import RGBColor
 from shop.models import *
-from ShopLabWork.settings import MEDIA_ROOT
+from ShopLabWork.settings import DOMAIN, MEDIA_URL, MEDIA_ROOT
 from django.db.models import Count, Max
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 import shop.services.shop_service as shop_services
 import shop.services.goods_service as goods_services

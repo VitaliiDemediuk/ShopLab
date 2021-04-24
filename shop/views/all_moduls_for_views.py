@@ -12,5 +12,6 @@ import shop.services.shop_service as shop_service
 import shop.services.goods_service as goods_service
 import shop.services.section_brand_service as section_brand_service
 import shop.services.import_export_service as import_export_service
+import shop.services.account_services as account_services
 
 IMG_LINK_PREFIX = DOMAIN + MEDIA_URL

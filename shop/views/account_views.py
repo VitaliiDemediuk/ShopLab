@@ -1,4 +1,5 @@
 from shop.views.all_moduls_for_views import *
+import shop.services.account_services as account_services
 from shop.forms.account_forms import RegistrationForm, UserLoginForm
 from django.contrib.auth import login, logout
 
@@ -20,7 +21,8 @@ def registration(request):
         if request.method == 'POST':
             form = RegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                user = form.save()
+                account_services.send_verification_mail(user)
                 messages.success(request, 'Registration successful!')
                 return redirect('login')
             else:
@@ -40,8 +42,12 @@ def user_login(request):
             form = UserLoginForm(data=request.POST)
             if form.is_valid():
                 user = form.get_user()
-                login(request, user)
-                messages.success(request, 'Login successful!')
+                if user.is_verified:
+                    login(request, user)
+                    messages.success(request, 'Login successful!')
+                else:
+                    messages.error(request, 'Verify your email')
+                    return redirect('login')
                 return redirect('index')
             else:
                 messages.error(request, 'Login failed!')
@@ -56,4 +62,11 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
+    return redirect('login')
+
+
+def email_verification(request):
+    is_verified = account_services.verify_user(request.GET['id'], request.GET['token'])
+    if is_verified:
+        messages.success(request, 'Email verified!')
     return redirect('login')
