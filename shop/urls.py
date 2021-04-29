@@ -21,6 +21,7 @@ urlpatterns = [
     path('registration/', account_views.registration, name='registration'),
     path('login/', account_views.user_login, name='login'),
     path('logout/', account_views.user_logout, name='logout'),
-    path('password-reset/', django_views.PasswordResetView.as_view(), name='password-reset'),
     path('email-verification/', account_views.email_verification, name='email-verification'),
+    path('forgot-password', account_views.forgot_password, name='forgot-password'),
+    path('reset-password/', account_views.reset_password, name='reset-password'),
 ]

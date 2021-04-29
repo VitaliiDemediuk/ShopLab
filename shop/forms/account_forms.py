@@ -20,3 +20,10 @@ class RegistrationForm(CustomUserCreationForm):
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+class ResetPasswordForm(forms.Form):
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label="Password confirmation:", widget=forms.PasswordInput(attrs={'class': 'form-control'}))

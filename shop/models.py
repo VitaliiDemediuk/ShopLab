@@ -161,6 +161,7 @@ class CustomUser(AbstractUser):
     is_verified = models.BooleanField(default=False)
     goods_for_basket = models.ManyToManyField('Goods', through='Basket', related_name='goods_for_basket')
     goods_for_review = models.ManyToManyField('Goods', through='Review', related_name='goods_for_review')
+    reset_password_token = models.CharField(max_length=39, default="")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

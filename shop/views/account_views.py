@@ -1,6 +1,6 @@
 from shop.views.all_moduls_for_views import *
 import shop.services.account_services as account_services
-from shop.forms.account_forms import RegistrationForm, UserLoginForm
+from shop.forms.account_forms import *
 from django.contrib.auth import login, logout
 
 
@@ -70,3 +70,60 @@ def email_verification(request):
     if is_verified:
         messages.success(request, 'Email verified!')
     return redirect('login')
+
+
+def forgot_password(request):
+    if request.user.is_authenticated:
+        return HttpResponseNotFound()
+    else:
+        form = ForgotPasswordForm()
+        if request.method == 'POST':
+            form = ForgotPasswordForm(data=request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                account_services.send_password_reset_mail(data['email'])
+                messages.success(request, "Instructions for resetting your password have been sent to your email.")
+                return redirect('index')
+            else:
+                messages.error(request, form.errors['__all__'])
+                return redirect('index')
+
+        sections = section_brand_service.get_sections_with_categories()
+        return render(request, 'shop/forgot-password.html', {'sections': sections,
+                                                             'form': form})
+
+
+def reset_password(request):
+    form = ResetPasswordForm()
+    if request.method == 'POST':
+        id, token = None, None
+        try:
+            id = int(request.POST['id'])
+            token = request.GET['token']
+        except:
+            messages.error(request, "Reset password error!")
+            redirect('index')
+        if not account_services.is_correct_parameters_for_reset_password(id, token):
+            messages.error(request, "Reset password error!")
+            return redirect('index')
+        if request.POST['password1'] != request.POST['password2']:
+            messages.error(request, "The passwords are not the same!")
+            return redirect((request.build_absolute_uri()))
+        errs = account_services.reset_password(id, request.POST['password1'])
+        if errs:
+            for err in errs:
+                messages.error(request, err)
+            return redirect((request.build_absolute_uri()))
+        else:
+            messages.success(request, "The password reset!")
+            return redirect('login')
+    try:
+        id = int(request.GET['id'])
+        token = request.GET['token']
+        if account_services.is_correct_parameters_for_reset_password(id, token):
+            sections = section_brand_service.get_sections_with_categories()
+            return render(request, 'shop/reset-password.html', {'sections': sections,
+                                                                'form': form, 'id': id, 'token': token})
+    except:
+        pass
+    return redirect('index')
