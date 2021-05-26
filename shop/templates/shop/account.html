@@ -1,7 +1,63 @@
 {% include 'shop/include/head.html' %}
 <div style="margin-left: 20px; margin-top: 20px;">
-    <h1>Hi, {{ user.get_full_name }}!</h1>
+    <h1>Hi, {{ request.user.get_full_name }}!</h1>
     <a href="{% url 'logout' %}"> Log out</a>
 </div>
+{% if request.user.is_superuser %}
+<hr>
+<div style="margin-left: 20px; margin-top: 20px;">
+    <h1>Other account:</h1>
+    <table class="table table-hover" style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 30px">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Phone number</th>
+          <th scope="col">Is Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          {% if user.id != request.user.id %}
+              <tr class="table-light">
+                  <th scope="row">{{ user.id }}</th>
+                  <th>{{ user.first_name }}</th>
+                  <th>{{ user.last_name }}</th>
+                  <td>{{ user.email }}</td>
+                  <td>{{ item.phone_number }}</td>
+                  <td>
+                  <form method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="operation" value="set_is_seperuser">
+                      <input type="hidden" name="user_id" value="{{ user.id }}">
+                      <input id="is_checked_{{ user.id }}" type="hidden" name="is_checked" value="">
+                      <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input is-admin-checkbox" id="customSwitch1" {% if user.is_superuser %}checked{% endif %} value="{{ user.id }}">
+                          <label class="custom-control-label" for="customSwitch1">Is Admin</label>
+                      </div>
+                      <button type="submit" style="border: 0;" id="submit-button-for-user-{{ user.id }}"></button>
+          </form></td>
+              </tr>
+            {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+    <script>
+        is_admin_checkboxes = document.getElementsByClassName("is-admin-checkbox")
+        for(let checkbox of is_admin_checkboxes) {
+            checkbox.onchange = function (event) {
+                user_id = event.currentTarget.value
+                button_element_id = `submit-button-for-user-${user_id}`
+                document.getElementById(`is_checked_${user_id}`).setAttribute('value', event.currentTarget.checked)
+                button = document.getElementById(button_element_id)
+                button.click()
+            };
+        }
+    </script>
+{% endif %}
 
 {% include 'shop/include/footer.html' %}

@@ -1,0 +1,33 @@
+{% include 'shop/include/head.html' %}
+
+<table class="table table-hover" style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 30px">
+  <thead>
+    <tr>
+      <th scope="col">Photo</th>
+      <th scope="col">Name</th>
+      <th scope="col">Size</th>
+      <th scope="col">Count</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in basket_items %}
+        <tr class="table-light">
+      <th scope="row"><img style="height: 50px;" src="{{ item.photo_url }}"></th>
+      <th class="name-row"><a href="/product/{{ item.goods_id }}">{{ item.goods_name }}</a></th>
+      <td>{{ item.size }}</td>
+      <td>{{ item.count }}</td>
+      <td>
+          <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="method" value="delete">
+                  <input type="hidden" name="item_id" value="{{ item.basket_item_id }}">
+              <button type="submit" class="btn btn-danger">Delete</button>
+          </form></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% include 'shop/include/footer.html' %}

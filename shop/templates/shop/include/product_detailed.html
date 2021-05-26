@@ -56,15 +56,19 @@
                     </div>
                 <div class="col-2">
                 <label>Size</label>
-                    <select class="form-control">
+                    <select class="form-control" id="size_selector">
                         {% for size in goods.sizes %}
                         <option id="{{ size.id }}">{{ size.name }}</option>
                         {% endfor %}
                     </select>
                 </div> <!-- col.// -->
-                <div class="col" style="margin-top: 30px">
-                    <a href="" class="btn  btn-primary w-100"> Add to cart <i class="fas fa-shopping-cart"></i>  </a>
-                </div> <!-- col.// -->
+                <form class="col" style="margin-top: 30px" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form-name" value="add-product">
+                    <input id="count-add-form-input" type="hidden" name="count" value="1">
+                    <input id="size_id-add-form-input" type="hidden" name="size_id" value="{{ goods.sizes.0.id }}">
+                    <button type="submit" class="btn  btn-primary w-100"> Add to cart <i class="fas fa-shopping-cart"></i></button>
+                </form> <!-- col.// -->
                 <div class="col">
                     <a href="#" class="btn  btn-light"> <i class="fas fa-heart"></i>  </a>
                 </div> <!-- col.// -->

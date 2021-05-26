@@ -5,10 +5,16 @@ from django.contrib.auth import login, logout
 
 
 def account(request):
+    if request.method == "POST":
+        if request.POST['operation'] == 'set_is_seperuser':
+            user_id = int(request.POST['user_id'])
+            is_superuser = True if request.POST['is_checked'] == 'true' else False
+            account_services.set_is_superuser(user_id, is_superuser)
     if request.user.is_authenticated:
         sections = section_brand_service.get_sections_with_categories()
+        users = account_services.get_all_users()
         return render(request, 'shop/account.html', {'sections': sections,
-                                                     'user': request.user})
+                                                     'users': users})
     else:
         return redirect('login')
 

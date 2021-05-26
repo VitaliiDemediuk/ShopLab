@@ -192,6 +192,7 @@ class Basket(models.Model):
     fk_buyer_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
     count = models.IntegerField(validators=[MinValueValidator(0)])
     date = models.DateTimeField(auto_now_add=True)
+    fk_size_id = models.ForeignKey('Size', on_delete=models.CASCADE)
 
 
 class Review(models.Model):

@@ -4,6 +4,22 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 import urllib
 
+def get_all_users():
+    users = list()
+    users_query_set = CustomUser.objects.all()
+    for user in users_query_set:
+        users.append({'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name,
+                      'email': user.email, 'phone_number': user.phone_number,
+                      'is_superuser': user.is_superuser})
+    return users
+
+def set_is_superuser(user_id: int, is_superuser: bool):
+    user = CustomUser.objects.filter(pk=user_id)
+    if user:
+        print(is_superuser)
+        user = user[0]
+        user.is_superuser = is_superuser
+        user.save()
 
 def send_verification_mail(user):
     title = 'Shop account verification'

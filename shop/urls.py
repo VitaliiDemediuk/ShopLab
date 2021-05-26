@@ -24,4 +24,5 @@ urlpatterns = [
     path('email-verification/', account_views.email_verification, name='email-verification'),
     path('forgot-password', account_views.forgot_password, name='forgot-password'),
     path('reset-password/', account_views.reset_password, name='reset-password'),
+    path('basket/', views.basket, name='basket'),
 ]

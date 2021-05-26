@@ -2,7 +2,7 @@ from shop.views.all_moduls_for_views import *
 
 def index(request):
     sections = section_brand_service.get_sections_with_categories()
-    photo_for_slider = shop_service.get_photos_for_slider()
+    photo_for_slider = shop_services.get_photos_for_slider()
     return render(request, 'shop/index.html', {'sections': sections,
                                                "photo_count_range": range(1, len(photo_for_slider)),
                                                "photo_for_slider": photo_for_slider,
@@ -18,6 +18,17 @@ def brands(request):
 
 
 def product(request, product_id):
+    if request.method == 'POST':
+        if request.POST['form-name']:
+            if request.user.is_authenticated:
+                count = int(request.POST['count'])
+                size_id = int(request.POST['size_id'])
+                shop_services.add_product_to_basket(product_id, request.user, size_id, count)
+                messages.success(request, 'Product added')
+            else:
+                messages.error(request, 'Log in!')
+                return redirect('login')
+
     sections = section_brand_service.get_sections_with_categories()
     goods = goods_service.get_goods_by_id(product_id)
     if goods is None or not goods['is_enable']:
@@ -64,8 +75,24 @@ def brand(request, brand_link_name):
 
 def stats(request):
     sections = section_brand_service.get_sections_with_categories()
-    number_of_products_in_each_section = shop_service.get_number_of_products_in_each_section
-    number_of_products_in_each_category = shop_service.get_number_of_products_in_each_category()
+    number_of_products_in_each_section = shop_services.get_number_of_products_in_each_section
+    number_of_products_in_each_category = shop_services.get_number_of_products_in_each_category()
     return render(request, 'shop/stats.html', {'sections': sections,
                                                'number_of_products_in_each_section': number_of_products_in_each_section,
                                                'number_of_products_in_each_category': number_of_products_in_each_category,})
+
+def basket(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated and \
+           request.POST['method'] == 'delete':
+            shop_services.delete_basket_item_by_id(request.POST['item_id'], request.user)
+
+
+    if request.user.is_authenticated:
+        basket_items = shop_services.get_basket_items_by_user(request.user)
+        sections = section_brand_service.get_sections_with_categories()
+        return render(request, 'shop/basket.html', {'sections': sections,
+                                                    'basket_items': basket_items})
+    else:
+        messages.error(request, 'Log in!')
+        return redirect('login')
